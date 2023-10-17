@@ -1,0 +1,39 @@
+﻿@model IEnumerable<ObservationCSharp.Models.Observation>
+
+<h2>Observation List</h2>
+
+@if (Model != null && Model.Any())
+{
+
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Media Namn</th>
+                <th>Kvalite</th>
+                <th>Datum</th>
+                <th>Grad</th>
+                <th>Säkerhet</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Observation observation in Model)
+            {
+                <tr>
+                    <td>@observation.ID</td>
+                    <td>@observation.Media_Namn</td>
+                    <td>@observation.Kvalite</td>
+                    <td>@observation.Datum</td>
+                    <td>@observation.Grad</td>
+                    <td>@observation.Sakerhet</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No observations before this date.</p>
+}
+

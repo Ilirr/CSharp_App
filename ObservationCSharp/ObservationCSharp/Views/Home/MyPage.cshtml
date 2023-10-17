@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "MyPage";
+}
+
+<form method="post" action="@Url.Action("Login", "Home")">
+    <label>Username:</label>
+    <input type="text" name="username" required />
+    <label>Password:</label>
+    <input type="password" name="password" required />
+    <input type="submit" value="Login" />
+</form>

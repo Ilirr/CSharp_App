@@ -1,0 +1,167 @@
+﻿@{
+    ViewData["Title"] = "Observation System";
+}
+
+
+@if (ViewBag.SessionId == null)
+{
+    <div>You are not logged in!</div>
+
+}
+else
+{
+    <h1>Welcome @ViewBag.username !</h1>
+    <div>
+        <div>Current Session ID: <span>@ViewBag.SessionId</span></div>
+    </div>
+    <form method="post" action="@Url.Action("Logout", "Home")">
+        <input type="submit" value="Logout" />
+    </form>
+}
+<hr />
+
+
+
+
+
+<div class="text-center">
+    <h1 class="display-4">Observation System</h1>
+</div>
+
+@model ObservationCSharp.Models.ViewModel
+
+@{
+    var persons = Model.Persons;
+}
+
+
+
+<h3>Person list</h3>
+<select name="dropdown">
+    @foreach (SelectListItem person in persons)
+    {
+        <option value="@person.Value">@person.Text</option>
+    }
+</select>
+
+
+@using (Html.BeginForm("AddObservation", "Observation", FormMethod.Post))
+{
+    <h3>Add Observation</h3>
+    <label>Observation ID:</label>
+    <input type="number" name="id" required />
+    <br />
+    <label>Media Namn:</label>
+    <input type="text" name="media_namn" required />
+    <br />
+    <label>Kvalite:</label>
+    <select name="kvalite">
+        <option value="1">Dålig</option>
+        <option value="2">God</option>
+        <option value="3">Medelgod</option>
+        <option value="4">Bra</option>
+    </select>
+    <label>Datum:</label>
+    <input type="date" name="datum" required />
+    <br />
+    <label>Grad (1-4):</label>
+    <input type="number" name="grad" min="1" max="4" required />
+    <br />
+    <label>Säkerhet (1-114):</label>
+    <input type="number" name="sakerhet" min="1" max="114" required />
+    <br />
+    <input type="submit" value="Add Observation" />
+}
+
+<h3>Observation List</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Media Namn</th>
+            <th>Kvalite</th>
+            <th>Datum</th>
+            <th>Grad</th>
+            <th>Säkerhet</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Observation observation in Model.Observations)
+        {
+            <tr>
+                <td>@observation.ID</td>
+                <td>@observation.Media_Namn</td>
+                <td>@observation.Kvalite</td>
+                <td>@observation.Datum</td>
+                <td>@observation.Grad</td>
+                <td>@observation.Sakerhet</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@using (Html.BeginForm("Search", "Observation", FormMethod.Post))
+{
+    <label>Search Observation by Media Kvalite:</label>
+    <select name="kvalite">
+        <option value="1">Dålig</option>
+        <option value="2">God</option>
+        <option value="3">Medelgod</option>
+        <option value="4">Bra</option>
+    </select>
+    <input type="submit" value="Search">
+}
+
+
+
+@foreach (Observation observation in Model.Observations)
+{
+    <a href="@Url.Action("UpdateSecurity", "Observation", new { observationID = observation.ID })">
+        Observation @observation.ID: Add +10 to säkerhet. Current: @observation.Sakerhet
+    </a>
+    <br />
+}
+
+
+<h3>All Observation_Person tables:</h3>
+
+<table border="1">
+    <tr>
+        <th>Person ID</th>
+        <th>Observation ID</th>
+    </tr>
+    @if (Model.PersonObservations != null && Model.PersonObservations.Any())
+    {
+        @foreach (PersonObservation observation in Model.PersonObservations)
+        {
+            <tr>
+                <td>@observation.PersonId</td>
+                <td>@observation.ObservationId</td>
+            </tr>
+        }
+    }
+    else
+    {
+        <p>No tables found.</p>
+    }
+   
+</table>
+
+
+
+@using (Html.BeginForm("Index", "Procedure", FormMethod.Post))
+{
+    <label>Execute Procedure:</label>
+    <select asp-for="SelectedProcedure" asp-items="Model.Procedures"></select>
+    <input type="submit" value="Execute">
+}
+
+
+<h3>Find Observation by Date</h3>
+@using (Html.BeginForm("ObservationsByDate","Observation", FormMethod.Post))
+{
+    <label for="Date">Enter Date:</label>
+    @Html.TextBoxFor(m => m.Observation.Datum, "{0:yyyy-MM-dd}", new { @type = "date" })
+    <input type="submit" value="Submit" />
+}
